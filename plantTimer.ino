@@ -1,18 +1,7 @@
-    // reset settings - wipe stored credentials for testing
-    // these are stored by the esp library
-    //wm.resetSettings();
-
-    // Automatically connect using saved credentials,
-    // if connection fails, it starts an access point with the specified name ( "AutoConnectAP"),
-    // if empty will auto generate SSID, if password is blank it will be anonymous AP (wm.aut
-
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include <NTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
-
-const char* ssid = "MTL_Wifi";
-const char* password = "porticoculture";
 
 bool LED_ON = false;
 
@@ -22,8 +11,14 @@ const long utcOffsetInSeconds = -18000;
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", utcOffsetInSeconds);
 
-
 void setup() {
+  
+    pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
+    pinMode(14, OUTPUT);     //  pin 14 is D5 on WeMos D1 mini
+    delay(500);
+    digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level
+    digitalWrite(14, HIGH);
+  
     WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
     // it is a good practice to make sure your code sets wifi mode how you want it.
 
@@ -35,8 +30,8 @@ void setup() {
 
     bool res;
     // res = wm.autoConnect(); // auto generated AP name from chipid
-    // res = wm.autoConnect("AutoConnectAP"); // anonymous ap
-    res = wm.autoConnect("AutoConnectAP","password"); // password protected ap
+    res = wm.autoConnect("PlantTimer", "PlantTimer"); // anonymous ap
+    // res = wm.autoConnect("AutoConnectAP","password"); // password protected ap
 
     if(!res) {
         Serial.println("Failed to connect");
@@ -44,19 +39,12 @@ void setup() {
     } 
     else {
         //if you get here you have connected to the WiFi    
-        Serial.println("connected...yeey :)");
+        Serial.println("connected to network...)");
+        digitalWrite(LED_BUILTIN, HIGH);   // Turn the LED on (Note that LOW is the voltage level
+        digitalWrite(14, LOW);
     }
-//  while (WiFi.status() != WL_CONNECTED){
-//    delay (500);
-//    Serial.print(".");
-//  }
 
   timeClient.begin();
-  
-  
-  pinMode(LED_BUILTIN, OUTPUT);     // Initialize the LED_BUILTIN pin as an output
-  pinMode(14, OUTPUT);
-  
 }
 
 // the loop function runs over and over again forever
