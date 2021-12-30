@@ -60,12 +60,13 @@ void loop() {
   Serial.print(":");
   Serial.println(timeClient.getSeconds());
   int hourNow = timeClient.getHours();
-  if(!LED_ON && hourNow<20 && hourNow>6){
+  if(hourNow<20 && hourNow>=6){
     LED_ON = true;
     digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level
     digitalWrite(14, HIGH);
     Serial.println("Turning on Lights!");
-  } else if (LED_ON && (hourNow>20 || hourNow<6) ){
+  }
+  else{
     LED_ON = false;
     digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(14, LOW);// Turn the LED off by making the voltage HIGH
